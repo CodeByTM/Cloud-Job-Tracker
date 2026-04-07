@@ -1,0 +1,17 @@
+# Node
+node_modules/
+build/
+
+# AWS SAM
+.aws-sam/
+
+# Python
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+
+# OS
+.DS_Store
+Thumbs.db

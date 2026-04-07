@@ -1,0 +1,265 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #eef2ff, #f8fafc);
+  --text-main: #1f2937;
+  --text-soft: #6b7280;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --primary: #2563eb;
+  --danger: #ef4444;
+  --status-applied-bg: #e0f2fe;
+  --status-applied-text: #0369a1;
+  --status-interviewing-bg: #fef9c3;
+  --status-interviewing-text: #92400e;
+  --status-rejected-bg: #fee2e2;
+  --status-rejected-text: #991b1b;
+  --status-offer-bg: #dcfce7;
+  --status-offer-text: #166534;
+  --status-accepted-bg: #bbf7d0;
+  --status-accepted-text: #065f46;
+}
+
+body[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #1e293b, #0f172a);
+  --text-main: #e5e7eb;
+  --text-soft: #9ca3af;
+  --card-bg: #1f2937;
+  --input-bg: #111827;
+  --input-border: #374151;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --primary: #3b82f6;
+  --danger: #ef4444;
+  --status-applied-bg: #1e3a8a;
+  --status-applied-text: #bfdbfe;
+  --status-interviewing-bg: #78350f;
+  --status-interviewing-text: #fde68a;
+  --status-rejected-bg: #7f1d1d;
+  --status-rejected-text: #fecaca;
+  --status-offer-bg: #064e3b;
+  --status-offer-text: #bbf7d0;
+  --status-accepted-bg: #14532d;
+  --status-accepted-text: #86efac;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+h2,
+h3,
+p,
+label,
+span,
+strong,
+a {
+  color: inherit;
+}
+
+.top-bar,
+.auth-top-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.top-bar h1,
+.auth-top-bar h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-box button,
+.theme-toggle {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.user-box button:last-child {
+  background: var(--danger);
+}
+
+.user-box button:hover,
+.theme-toggle:hover,
+.job-form button:hover,
+.job-actions button:hover {
+  opacity: 0.92;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card,
+.job-card,
+.job-form {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.card p {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.job-form {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.job-form input,
+.job-form select,
+.job-form textarea {
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.job-form input::placeholder,
+.job-form textarea::placeholder {
+  color: var(--text-soft);
+}
+
+.job-form input:focus,
+.job-form select:focus,
+.job-form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  transform: scale(1.01);
+}
+
+.job-form button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.jobs-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.job-card h3 {
+  margin-top: 0;
+}
+
+.job-card:hover {
+  transform: translateY(-3px);
+  transition: all 0.2s ease;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.status.applied {
+  background: var(--status-applied-bg);
+  color: var(--status-applied-text);
+}
+
+.status.interviewing {
+  background: var(--status-interviewing-bg);
+  color: var(--status-interviewing-text);
+}
+
+.status.rejected {
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+}
+
+.status.offer {
+  background: var(--status-offer-bg);
+  color: var(--status-offer-text);
+}
+
+.status.accepted {
+  background: var(--status-accepted-bg);
+  color: var(--status-accepted-text);
+}
+
+.job-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.job-actions button {
+  flex: 1;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.job-actions button:first-child {
+  background: var(--primary);
+  color: white;
+}
+
+.job-actions button:last-child {
+  background: var(--danger);
+  color: white;
+}
+
+.auth-wrapper {
+  max-width: 420px;
+  margin: 5rem auto;
+}
+
+.error {
+  color: #dc2626;
+  font-weight: 500;
+}

@@ -1,0 +1,177 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Cloud Job Tracker Backend
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 10
+    MemorySize: 128
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref JobApplicationsTable
+
+  Api:
+    OpenApiVersion: 3.0.1
+    Cors:
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,Authorization'"
+      AllowOrigin: "'*'"
+    Auth:
+      DefaultAuthorizer: CognitoAuthorizer
+      AddDefaultAuthorizerToCorsPreflight: false
+      Authorizers:
+        CognitoAuthorizer:
+          UserPoolArn: !GetAtt JobTrackerUserPool.Arn
+    MethodSettings:
+      - HttpMethod: "*"
+        ResourcePath: "/*"
+        ThrottlingBurstLimit: 20
+        ThrottlingRateLimit: 10
+
+Resources:
+  JobApplicationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JobApplications
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: jobId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: jobId
+          KeyType: RANGE
+
+  JobTrackerUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: cloud-job-tracker-users
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  JobTrackerUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: cloud-job-tracker-client
+      UserPoolId: !Ref JobTrackerUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+
+  GetJobFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: get_job.lambda_handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        GetJobApi:
+          Type: Api
+          Properties:
+            Path: /jobs/{jobId}
+            Method: get
+
+  CreateJobFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: create_job.lambda_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        CreateJobApi:
+          Type: Api
+          Properties:
+            Path: /jobs
+            Method: post
+
+  GetJobsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: get_jobs.lambda_handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        GetJobsApi:
+          Type: Api
+          Properties:
+            Path: /jobs
+            Method: get
+
+  UpdateJobFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: update_job.lambda_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        UpdateJobApi:
+          Type: Api
+          Properties:
+            Path: /jobs/{jobId}
+            Method: put
+
+  DeleteJobFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: delete_job.lambda_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        DeleteJobApi:
+          Type: Api
+          Properties:
+            Path: /jobs/{jobId}
+            Method: delete
+
+  DashboardFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: dashboard.lambda_handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref JobApplicationsTable
+      Events:
+        DashboardApi:
+          Type: Api
+          Properties:
+            Path: /dashboard
+            Method: get
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref JobTrackerUserPool
+
+  UserPoolClientId:
+    Description: Cognito User Pool Client ID
+    Value: !Ref JobTrackerUserPoolClient
