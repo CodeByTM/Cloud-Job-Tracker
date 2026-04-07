@@ -27,9 +27,14 @@ function JobForm({ onJobCreated }) {
     if (!data.title.trim()) return "Job title is required";
     if (!data.dateApplied.trim()) return "Date is required";
 
-    if (data.jobUrl && !data.jobUrl.startsWith("http")) {
+    if (data.jobUrl && !/^https?:\/\//i.test(data.jobUrl)) {
       return "Job URL must start with http or https";
     }
+
+    if (data.company.length > 100) return "Company must be 100 characters or less";
+    if (data.title.length > 100) return "Job title must be 100 characters or less";
+    if (data.location.length > 100) return "Location must be 100 characters or less";
+    if (data.notes.length > 2000) return "Notes must be 2000 characters or less";
 
     return null;
   }
@@ -39,7 +44,6 @@ function JobForm({ onJobCreated }) {
     setLoading(true);
     setError("");
 
-    // 🔒 Clean + sanitize inputs (frontend layer)
     const cleanedData = {
       company: formData.company.trim(),
       title: formData.title.trim(),
@@ -50,7 +54,6 @@ function JobForm({ onJobCreated }) {
       notes: formData.notes.trim(),
     };
 
-    // 🔒 Basic validation
     const validationError = validateForm(cleanedData);
     if (validationError) {
       setError(validationError);
@@ -60,7 +63,6 @@ function JobForm({ onJobCreated }) {
 
     try {
       await onJobCreated(cleanedData);
-
       setFormData({
         company: "",
         title: "",
@@ -71,7 +73,7 @@ function JobForm({ onJobCreated }) {
         notes: "",
       });
     } catch (err) {
-      setError("Could not create job.");
+      setError(err.message || "Could not create job.");
     } finally {
       setLoading(false);
     }
@@ -88,6 +90,7 @@ function JobForm({ onJobCreated }) {
         value={formData.company}
         onChange={handleChange}
         required
+        maxLength={100}
       />
 
       <input
@@ -97,6 +100,7 @@ function JobForm({ onJobCreated }) {
         value={formData.title}
         onChange={handleChange}
         required
+        maxLength={100}
       />
 
       <select name="status" value={formData.status} onChange={handleChange}>
@@ -121,6 +125,7 @@ function JobForm({ onJobCreated }) {
         placeholder="Location"
         value={formData.location}
         onChange={handleChange}
+        maxLength={100}
       />
 
       <input
@@ -129,6 +134,7 @@ function JobForm({ onJobCreated }) {
         placeholder="Job URL"
         value={formData.jobUrl}
         onChange={handleChange}
+        maxLength={500}
       />
 
       <textarea
@@ -137,6 +143,7 @@ function JobForm({ onJobCreated }) {
         value={formData.notes}
         onChange={handleChange}
         rows="4"
+        maxLength={2000}
       />
 
       <button type="submit" disabled={loading}>

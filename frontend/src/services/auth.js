@@ -5,9 +5,16 @@ import {
   CognitoUserAttribute,
 } from "amazon-cognito-identity-js";
 
+const UserPoolId = process.env.REACT_APP_COGNITO_USER_POOL_ID;
+const ClientId = process.env.REACT_APP_COGNITO_CLIENT_ID;
+
+if (!UserPoolId || !ClientId) {
+  throw new Error("Missing Cognito environment variables");
+}
+
 const poolData = {
-  UserPoolId: "us-east-1_RkxOgi4Rw",
-  ClientId: "2jiujjrackai0ecvpoh02icvag",
+  UserPoolId,
+  ClientId,
 };
 
 const userPool = new CognitoUserPool(poolData);

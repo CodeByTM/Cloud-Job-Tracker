@@ -1,29 +1,26 @@
-import json
 import os
 import uuid
 from datetime import datetime, timezone
 
 import boto3
-from utils import get_user_id, sanitize_job_payload
+from utils import (
+    RateLimitExceeded,
+    build_response,
+    enforce_rate_limit,
+    get_user_id,
+    parse_json_body,
+    sanitize_job_payload,
+)
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 
 
-def build_response(status_code, body):
-    return {
-        "statusCode": status_code,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
-        "body": json.dumps(body)
-    }
-
-
 def lambda_handler(event, context):
     try:
-        body = json.loads(event.get("body", "{}"))
+        enforce_rate_limit(event, endpoint_key="jobs:create", is_write=True)
+
+        body = parse_json_body(event)
         cleaned = sanitize_job_payload(body, partial=False)
         user_id = get_user_id(event)
 
@@ -41,22 +38,26 @@ def lambda_handler(event, context):
             "jobUrl": cleaned["jobUrl"],
             "notes": cleaned["notes"],
             "createdAt": now,
-            "updatedAt": now
+            "updatedAt": now,
         }
 
         table.put_item(Item=item)
 
         return build_response(201, {
             "message": "Job created successfully",
-            "job": item
+            "job": item,
         })
 
+    except RateLimitExceeded as e:
+        return build_response(
+            429,
+            {"message": e.message},
+            {"Retry-After": str(e.retry_after)},
+        )
     except ValueError as e:
         return build_response(400, {"message": str(e)})
-    except json.JSONDecodeError:
-        return build_response(400, {"message": "Invalid JSON body"})
     except Exception as e:
         return build_response(500, {
             "message": "Internal server error",
-            "error": str(e)
+            "error": str(e),
         })

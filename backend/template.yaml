@@ -10,6 +10,11 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref JobApplicationsTable
+        RATE_LIMIT_TABLE: !Ref RateLimitTable
+        USER_READ_RATE_LIMIT_PER_MINUTE: 120
+        USER_WRITE_RATE_LIMIT_PER_MINUTE: 30
+        IP_READ_RATE_LIMIT_PER_5_MIN: 300
+        IP_WRITE_RATE_LIMIT_PER_5_MIN: 60
 
   Api:
     OpenApiVersion: 3.0.1
@@ -46,6 +51,21 @@ Resources:
         - AttributeName: jobId
           KeyType: RANGE
 
+  RateLimitTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: JobTrackerRateLimits
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+
   JobTrackerUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -81,6 +101,8 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         GetJobApi:
           Type: Api
@@ -96,6 +118,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         CreateJobApi:
           Type: Api
@@ -111,6 +135,8 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         GetJobsApi:
           Type: Api
@@ -126,6 +152,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         UpdateJobApi:
           Type: Api
@@ -141,6 +169,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         DeleteJobApi:
           Type: Api
@@ -156,6 +186,8 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref JobApplicationsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Events:
         DashboardApi:
           Type: Api

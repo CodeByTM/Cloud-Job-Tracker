@@ -11,7 +11,7 @@ __pycache__/
 
 # Environment files
 .env
-
+frontend/.env
 # OS
 .DS_Store
 Thumbs.db
