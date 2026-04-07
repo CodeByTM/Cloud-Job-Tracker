@@ -194,6 +194,21 @@ npm start
 
 ---
 
+## Screenshots
+
+### Authentication
+![Authentication](screenshots/auth.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Add Job
+![Job Form](screenshots/job-form.png)
+
+### Job Applications
+![Jobs](screenshots/jobs.png)
+---
+
 ## Author
 
 Tim MacDonald
