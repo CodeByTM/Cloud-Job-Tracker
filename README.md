@@ -1,3 +1,33 @@
+## 🚀 Live Demo
+
+https://dkeyzj69i5jgu.cloudfront.net
+
+## Screenshots
+
+### Authentication
+![Authentication](screenshots/auth.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Add Job
+![Job Form](screenshots/job-form.png)
+
+### Job Applications
+![Jobs](screenshots/jobs.png)
+---
+
+## Author
+
+Tim MacDonald
+AWS Certified Developer – Associate
+Cloud & Backend Developer
+
+GitHub: https://github.com/CodeByTM
+LinkedIn: https://linkedin.com/in/timmacdonaldd
+
+---
+
 # Cloud Job Tracker
 
 A full-stack, serverless job application tracking platform built with AWS and React, designed to demonstrate production-level cloud architecture, authentication, and secure API design.
@@ -194,31 +224,7 @@ npm start
 
 ---
 
-## Screenshots
 
-### Authentication
-![Authentication](screenshots/auth.png)
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Add Job
-![Job Form](screenshots/job-form.png)
-
-### Job Applications
-![Jobs](screenshots/jobs.png)
----
-
-## Author
-
-Tim MacDonald
-AWS Certified Developer – Associate
-Cloud & Backend Developer
-
-GitHub: https://github.com/CodeByTM
-LinkedIn: https://linkedin.com/in/timmacdonaldd
-
----
 
 ## Summary
 
