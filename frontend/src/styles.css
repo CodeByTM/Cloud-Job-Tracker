@@ -78,6 +78,7 @@ a {
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 2rem;
+  min-height: 48px;
 }
 
 .top-bar h1,
@@ -86,12 +87,14 @@ a {
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
+  white-space: nowrap;
 }
 
 .user-box {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  z-index: 1;
 }
 
 .user-box button,
@@ -114,6 +117,10 @@ a {
 .job-form button:hover,
 .job-actions button:hover {
   opacity: 0.92;
+}
+
+.theme-toggle {
+  z-index: 1;
 }
 
 .dashboard-grid {
@@ -262,4 +269,41 @@ a {
 .error {
   color: #dc2626;
   font-weight: 500;
+}
+
+/* Mobile fix */
+@media (max-width: 768px) {
+  .top-bar,
+  .auth-top-bar {
+    position: static;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    min-height: auto;
+    text-align: center;
+  }
+
+  .top-bar h1,
+  .auth-top-bar h1 {
+    position: static;
+    transform: none;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .user-box {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+.container {
+    padding: 1rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
 }
